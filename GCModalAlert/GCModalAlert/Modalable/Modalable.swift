@@ -15,3 +15,9 @@ public protocol Modalable: AnyObject {
     // modal alert need call this closure
     var triggerDismiss: VoidClosure! { get set }
 }
+
+extension Modalable {
+    public var identifier: String {
+        return modalViewConfig.duplicateIdentifier ?? NSStringFromClass(type(of: self))
+    }
+}

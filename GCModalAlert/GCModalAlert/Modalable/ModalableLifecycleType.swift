@@ -8,6 +8,7 @@
 import Foundation
 
 public typealias VoidClosure = () -> Void
+public typealias BoolClosure = (Bool) -> Void
 
 public protocol ModalableLifecycleType {
     var modalViewWillShow: VoidClosure? { get }

@@ -50,26 +50,73 @@ class ViewController: UIViewController {
         modal3.backgroundColor = .cyan
         let tap3 = UITapGestureRecognizer(target: self, action: #selector(dismissAction(sender:)))
         modal3.addGestureRecognizer(tap3)
+        modal3.modalViewConfig.duplicateIdentifier = "modal3"
         
         modal2 = GCBaseModalAlert(frame: frame, lifecycle: lifecycle)
         modal2.backgroundColor = .green
-        modal2.modalViewConfig = ModalableConfig(priority: 10, condition: {
-            return 1 > 0
-        }, showAnimationType: .B2T, dismissAnimationType: .T2B)
+        modal2.modalViewConfig = ModalableConfig(priority: 10,
+                                                 condition: {
+                                                    return 1 > 0
+                                                 },
+                                                 beahviorWhileDuplicate: .useLastest,
+                                                 duplicateIdentifier: "000000",
+        showAnimationType: .B2T, showAnimationClosure: { bg, modal, completion  in
+            let animation = CABasicAnimation(keyPath: "transform.scale")
+            animation.fromValue = NSNumber.init(value: 1.2)
+            animation.toValue = NSNumber.init(value: 1.0)
+            animation.duration = 0.25
+            
+            modal.modalView.layer.add(animation, forKey: nil)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                completion(true)
+            }
+        }, dismissAnimationType: .T2B)
         let tap2 = UITapGestureRecognizer(target: self, action: #selector(dismissAction(sender:)))
         modal2.addGestureRecognizer(tap2)
+    
         
         DispatchQueue.main.async {
-            GCModalManager.defaultManager.add(self.modal)
-            GCModalManager.defaultManager.add(self.modal3)
-            GCModalManager.defaultManager.add(self.modal2)
+//            GCModalManager.defaultManager.add(self.modal)
+//            GCModalManager.defaultManager.add(self.modal3)
+//            GCModalManager.defaultManager.add(self.modal2)
             
 //            print(UIApplication.shared.keyWindow)
+            
+            
+            let mx = GCBaseModalAlert(frame: frame, lifecycle: lifecycle)
+            mx.backgroundColor = .green
+            mx.modalViewConfig = ModalableConfig(priority: 10,
+                                                     condition: {
+                                                        return 1 > 0
+                                                     },
+                                                     beahviorWhileDuplicate: .useLastest,
+                                                     duplicateIdentifier: "000000",
+                                                     cancelWhileTapBackground: true,
+                                                     tapBackgroundClosure: {
+                                                        print("我点击了背景图")
+                                                     },
+            showAnimationType: .B2T, showAnimationClosure: { bg, modal, completion  in
+                let animation = CABasicAnimation(keyPath: "transform.scale")
+                animation.fromValue = NSNumber.init(value: 1.2)
+                animation.toValue = NSNumber.init(value: 1.0)
+                animation.duration = 0.25
+                
+                modal.modalView.layer.add(animation, forKey: nil)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    completion(true)
+                }
+            }, dismissAnimationType: .T2B)
+            let tap2 = UITapGestureRecognizer(target: self, action: #selector(self.dismissAction(sender:)))
+            mx.addGestureRecognizer(tap2)
+            
+            GCModalManager.defaultManager.add(mx)
         }
     }
     
     @objc func dismissAction(sender: UITapGestureRecognizer) {
-        (sender.view as! Modalable).triggerDismiss?()
+//        (sender.view as! Modalable).triggerDismiss?()
     }
 
 }
